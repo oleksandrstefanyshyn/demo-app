@@ -13,8 +13,9 @@ import io.reactivex.schedulers.Schedulers
 private const val TAG = "CurrenciesListFragment"
 
 class CurrenciesListFragment : Fragment() {
-
-    private val currenciesApi = RetrofitModule.currenciesApi
+    private val currenciesApi: CurrenciesApi by lazy {
+        injector.currenciesApi
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,10 +31,10 @@ class CurrenciesListFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { currencies -> Log.d(TAG, "Currencies: $currencies") },
-                { error ->
+                {
                     Toast.makeText(
                         requireContext(),
-                        "Currencies do not get!",
+                        "Cannot get currencies!",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
