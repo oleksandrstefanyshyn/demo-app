@@ -5,16 +5,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 private const val TAG = "CurrenciesListFragment"
 
 class CurrenciesListFragment : Fragment() {
 
-    private  val currenciesApi = RetrofitModule.currenciesApi
+    private val currenciesApi = RetrofitModule.currenciesApi
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,14 +25,18 @@ class CurrenciesListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        currenciesApi.currenciesList().enqueue(object : Callback<Currencies> {
-            override fun onFailure(call: Call<Currencies>, t: Throwable) {
-                Log.e(TAG, "onFailure", t)
-            }
-
-            override fun onResponse(call: Call<Currencies>, response: Response<Currencies>) {
-                Log.d(TAG, "onResponse, ${response.body()}")
-            }
-        })
+        val disposable = currenciesApi.currenciesList()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { currencies -> Log.d(TAG, "Currencies: $currencies") },
+                { error ->
+                    Toast.makeText(
+                        requireContext(),
+                        "Currencies do not get!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            )
     }
 }
