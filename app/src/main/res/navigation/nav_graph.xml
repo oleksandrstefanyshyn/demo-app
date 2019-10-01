@@ -9,5 +9,18 @@
         android:id="@+id/currenciesListFragment"
         android:name="com.oleksandrstefanyshyn.demoapp.CurrenciesListFragment"
         android:label="fragment_currencies_list"
-        tools:layout="@layout/fragment_currencies_list" />
+        tools:layout="@layout/fragment_currencies_list">
+        <action
+            android:id="@+id/currencyClick"
+            app:destination="@id/exchangeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/exchangeFragment"
+        android:name="com.oleksandrstefanyshyn.demoapp.ExchangeFragment"
+        android:label="ExchangeFragment">
+        <argument
+            android:name="currencyName"
+            android:defaultValue='USD'
+            app:argType="string" />
+    </fragment>
 </navigation>

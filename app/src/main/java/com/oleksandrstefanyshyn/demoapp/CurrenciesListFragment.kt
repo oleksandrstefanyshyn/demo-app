@@ -3,6 +3,7 @@ package com.oleksandrstefanyshyn.demoapp
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,14 +32,17 @@ class CurrenciesListFragment : BaseFragment() {
         }
 
         currenciesAdapter.clickEvent.subscribe {
-            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            val action = CurrenciesListFragmentDirections.currencyClick(it)
+            findNavController().navigate(action)
         }.toDestroy()
 
         currenciesApi.currenciesList()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { currencies -> currenciesAdapter.update(currencies.rates.keys.toList()) },
+                { currencies ->
+                    currenciesAdapter.update(currencies.rates.keys.toList())
+                },
                 {
                     Toast.makeText(
                         requireContext(),

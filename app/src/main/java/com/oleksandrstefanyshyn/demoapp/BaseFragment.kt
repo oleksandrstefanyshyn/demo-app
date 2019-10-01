@@ -19,7 +19,7 @@ abstract class BaseFragment : Fragment() {
     ): View = inflater.inflate(layoutId, container, false)
 
     override fun onDestroyView() {
-        disposable.dispose()
+        disposable.clear()
         super.onDestroyView()
     }
 
