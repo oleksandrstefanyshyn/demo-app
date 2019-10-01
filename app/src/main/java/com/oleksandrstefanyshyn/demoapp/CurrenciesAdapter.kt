@@ -9,15 +9,10 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_currency.view.*
 
-class CurrenciesAdapter : RecyclerView.Adapter<CurrenciesAdapter.CurrenciesViewHolder>() {
+class CurrenciesAdapter : RecyclerView.Adapter<CurrenciesViewHolder>() {
     private val clickSubject = PublishSubject.create<String>()
     private var currencies: List<String> = emptyList()
     val clickEvent: Observable<String> = clickSubject
-
-    fun update(list: List<String>) {
-        currencies = list
-        notifyDataSetChanged()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         LayoutInflater.from(parent.context)
@@ -35,6 +30,12 @@ class CurrenciesAdapter : RecyclerView.Adapter<CurrenciesAdapter.CurrenciesViewH
         }
     }
 
-    class CurrenciesViewHolder(override val containerView: View) :
-        RecyclerView.ViewHolder(containerView), LayoutContainer
+    fun update(list: List<String>) {
+        currencies = list
+        notifyDataSetChanged()
+    }
+
 }
+
+class CurrenciesViewHolder(override val containerView: View) :
+    RecyclerView.ViewHolder(containerView), LayoutContainer

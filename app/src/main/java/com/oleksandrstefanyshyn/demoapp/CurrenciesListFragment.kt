@@ -1,29 +1,19 @@
 package com.oleksandrstefanyshyn.demoapp
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_currencies_list.*
 
-class CurrenciesListFragment : Fragment() {
+class CurrenciesListFragment : BaseFragment() {
     private val currenciesApi: CurrenciesApi by lazy {
         injector.currenciesApi
     }
-    private val disposable = CompositeDisposable()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_currencies_list, container, false)
+    override val layoutId: Int = R.layout.fragment_currencies_list
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,9 +32,7 @@ class CurrenciesListFragment : Fragment() {
 
         currenciesAdapter.clickEvent.subscribe {
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-        }.also {
-            disposable.add(it)
-        }
+        }.toDestroy()
 
         currenciesApi.currenciesList()
             .subscribeOn(Schedulers.io())
@@ -58,13 +46,6 @@ class CurrenciesListFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            ).also {
-                disposable.add(it)
-            }
-    }
-
-    override fun onDestroyView() {
-        disposable.dispose()
-        super.onDestroyView()
+            ).toDestroy()
     }
 }
