@@ -5,17 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
+    android:orientation="vertical"
     android:padding="16sp">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/first_card"
         android:layout_width="0dp"
         android:layout_height="240dp"
-        app:layout_constraintBottom_toTopOf="@id/second_card"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/second_card"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -50,12 +50,11 @@
         android:id="@+id/second_card"
         android:layout_width="0dp"
         android:layout_height="240dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/first_card"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:layout_constraintStart_toEndOf="@+id/first_card"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
