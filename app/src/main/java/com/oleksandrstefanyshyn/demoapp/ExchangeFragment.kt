@@ -9,18 +9,26 @@ import androidx.navigation.fragment.navArgs
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_exchange.*
-import java.math.BigDecimal
 
 class ExchangeFragment : BaseFragment() {
     private val currenciesApi: CurrenciesApi by lazy {
         injector.currenciesApi
     }
-    val args: ExchangeFragmentArgs by navArgs()
+    private val args: ExchangeFragmentArgs by navArgs()
+    var currencyValue: Double = 1.0
     override val layoutId: Int = R.layout.fragment_exchange
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val rxTextWatcher = RxTextWatcher()
+        currency_value.addTextChangedListener(rxTextWatcher)
+        rxTextWatcher.textChangeObserver
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                exchange_currency_value.text = String.format("%.2f", currencyValue * it.toDouble())
+            }.toDestroy()
+        currency_value.setText(currencyValue.toString())
         currency_name.text = args.currencyName
 
         currenciesApi.currenciesList()
@@ -40,7 +48,7 @@ class ExchangeFragment : BaseFragment() {
             ).toDestroy()
     }
 
-    private fun initSpinner(rates: Map<String, BigDecimal>) {
+    private fun initSpinner(rates: Map<String, Double>) {
         val adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
@@ -60,8 +68,12 @@ class ExchangeFragment : BaseFragment() {
                     position: Int,
                     id: Long
                 ) {
-                    val currency = parent.getItemAtPosition(position)
-                    exchange_currency_value.text = rates[currency].toString()
+                    val currency = parent.getItemAtPosition(position) as String
+                    currencyValue = rates.getValue(currency)
+                    exchange_currency_value.text = String.format(
+                        "%.2f",
+                        currencyValue * currency_value.text.toString().toDouble()
+                    )
                 }
             }
     }
