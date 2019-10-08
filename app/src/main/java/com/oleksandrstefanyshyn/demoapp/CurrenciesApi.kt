@@ -6,11 +6,11 @@ import retrofit2.http.Query
 
 interface CurrenciesApi {
 
-    @GET("latest")
+    @GET("latest?base=USD")
     fun currenciesList(): Single<Currencies>
 
     @GET("latest")
-    fun exangeRates(@Query("base") base: String): Single<Currencies>
+    fun exchangeRates(@Query("base") base: String): Single<Currencies>
 }
 
 data class Currencies(val rates: Map<String, Double>)

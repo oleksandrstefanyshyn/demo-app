@@ -15,6 +15,7 @@ class ExchangeFragment : BaseFragment() {
         injector.currenciesApi
     }
     private val args: ExchangeFragmentArgs by navArgs()
+    private val exchanger = Exchager()
     var currencyValue: Double = 1.0
     override val layoutId: Int = R.layout.fragment_exchange
 
@@ -26,12 +27,13 @@ class ExchangeFragment : BaseFragment() {
         rxTextWatcher.textChangeObserver
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                exchange_currency_value.text = String.format("%.2f", currencyValue * it.toDouble())
+                exchange_currency_value.text =
+                    formatValue(it.toDouble(), currencyValue)
             }.toDestroy()
         currency_value.setText(currencyValue.toString())
         currency_name.text = args.currencyName
 
-        currenciesApi.currenciesList()
+        currenciesApi.exchangeRates(args.currencyName)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -70,11 +72,13 @@ class ExchangeFragment : BaseFragment() {
                 ) {
                     val currency = parent.getItemAtPosition(position) as String
                     currencyValue = rates.getValue(currency)
-                    exchange_currency_value.text = String.format(
-                        "%.2f",
-                        currencyValue * currency_value.text.toString().toDouble()
-                    )
+                    exchange_currency_value.text =
+                        formatValue(currency_value.text.toString().toDouble(), currencyValue)
                 }
             }
+    }
+
+    private fun formatValue(amount: Double, rate: Double): String {
+        return String.format("%.2f", exchanger.exchange(amount, rate))
     }
 }
