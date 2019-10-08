@@ -10,7 +10,7 @@ class RxTextWatcher : TextWatcher {
     private val textChangeSubject = BehaviorSubject.create<String>()
 
     override fun afterTextChanged(s: Editable?) {
-        if (s.isNullOrEmpty()) textChangeSubject.onNext("")
+        if (s.isNullOrEmpty()) textChangeSubject.onNext("0")
         else textChangeSubject.onNext(s.toString())
     }
 
